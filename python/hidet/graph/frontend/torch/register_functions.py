@@ -306,6 +306,7 @@ def mul(x: Tensor, y: Tensor):
 
 
 @register_function(torch.cat)
+@register_function(torch.concat)
 def cat(tensors: List[Tensor], dim: int):
     dtype = functools.reduce(promote_type, [t.dtype for t in tensors])
     tensors = [ops.cast(t, dtype) for t in tensors]
@@ -313,6 +314,7 @@ def cat(tensors: List[Tensor], dim: int):
 
 
 @register_function(torch.cat)
+@register_function(torch.concat)
 def cat(tensors: List[Tensor], axis: int):  # PyTorch supports axis as well as the argument name
     dtype = functools.reduce(promote_type, [t.dtype for t in tensors])
     tensors = [ops.cast(t, dtype) for t in tensors]
