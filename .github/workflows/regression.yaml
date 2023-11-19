@@ -1,0 +1,20 @@
+name: Regression
+
+on:
+  workflow_dispatch:
+    inputs:
+      hardware_config:
+        description: 'Hardware Configuration(s), comma separated'
+        required: true
+        default: 'RTX4090'
+
+
+jobs:
+  print_hw:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ inputs.hardware_config }}"
+          echo "$HW_CONFIG 2"
+        env:
+          HW_CONFIG: ${{ inputs.hardware_config }}
