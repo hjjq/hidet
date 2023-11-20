@@ -32,6 +32,8 @@ for hw_config_id in hw_config_ids:
         output = subprocess.run(cmd, capture_output=True, text=True)
         print(output.stdout)
         print(output.stderr)
+        if output.returncode != 0:
+            raise RuntimeError("Failed to launch AWS instance.")
 
 cursor.close()
 conn.close()
