@@ -4,25 +4,24 @@ on:
   workflow_dispatch:
     inputs:
       hardware_config:
-        description: 'Hardware Configuration(s), comma separated'
+        description: 'Hardware Configuration ID(s), comma separated'
         required: true
-        default: 'RTX4090'
+        default: '1;2;3'
 
 
 jobs:
-  print_hw:
+  launch_instance:
     runs-on: ubuntu-latest
     steps:
+      # run: aws ec2 start-instances --instance-ids 
       - uses: actions/checkout@v4
-      - run: |
-          echo "${{ inputs.hardware_config }}"
-          echo "$HW_CONFIG 2"
+      - run: pip install mysql-connector-python
+      - run: python ./.github/scripts/regression.py
         env:
           HW_CONFIG: ${{ inputs.hardware_config }}
-      - run: pip install mysql-connector-python
-      - run: python ./scripts/regression/regression.py
-        env:
           CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
           CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
           CI_DB_USERNAME: ${{ secrets.CI_DB_USERNAME }}
           CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
