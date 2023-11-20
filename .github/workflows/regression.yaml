@@ -19,6 +19,7 @@ jobs:
           echo "$HW_CONFIG 2"
         env:
           HW_CONFIG: ${{ inputs.hardware_config }}
+      - run: pip install mysql-connector-python
       - run: python ./scripts/regression/regression.py
         env:
           CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
