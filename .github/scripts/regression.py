@@ -1,4 +1,5 @@
 import os
+import subprocess
 import mysql.connector
 
 
@@ -25,7 +26,10 @@ for hw_config_id in hw_config_ids:
     if len(rows) == 0:
         raise ValueError(f'Instance with hardware config id {hw_config_id} does not exist.')
     for row in rows:
-        print(row)
+        instance_id = row[1]
+        cmd = ['aws', 'ec2', 'start-instances', '--instance-ids', instance_id]
+        print("Running command:" + " ".join(cmd))
+        subprocess.run(cmd)
 
 cursor.close()
 conn.close()
