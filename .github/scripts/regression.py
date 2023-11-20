@@ -1,7 +1,9 @@
 import os
-
-
 import mysql.connector
+
+
+# e.g., '1,2,3'
+hw_config_ids = os.environ.get('HW_CONFIG')
 
 conn = mysql.connector.connect(
     host=os.environ.get('CI_DB_HOSTNAME'),
@@ -12,7 +14,7 @@ conn = mysql.connector.connect(
 )
 
 cursor = conn.cursor()
-query = "SELECT * FROM hardware_config"
+query = f"SELECT cloud_provider_id, instance_id FROM cloud_instance WHERE hardware_config_id IN ({hw_config_ids})"
 cursor.execute(query)
 
 for row in cursor:
