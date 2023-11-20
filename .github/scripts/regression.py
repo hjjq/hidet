@@ -21,9 +21,10 @@ for hw_config_id in hw_config_ids:
         f'WHERE hardware_config_id = {hw_config_id} LIMIT 1'
     )
     cursor.execute(query)
-    if cursor.rowcount == 0:
+    rows = cursor.fetchall()
+    if len(rows) == 0:
         raise ValueError(f'Instance with hardware config id {hw_config_id} does not exist.')
-    for row in cursor:
+    for row in rows:
         print(row)
 
 cursor.close()
