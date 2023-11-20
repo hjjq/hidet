@@ -6,7 +6,7 @@ on:
       hardware_config:
         description: 'Hardware Configuration ID(s), comma separated'
         required: true
-        default: '1;2;3'
+        default: '1,2,3'
 
 
 jobs:
