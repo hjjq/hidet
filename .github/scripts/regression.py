@@ -28,7 +28,7 @@ for hw_config_id in hw_config_ids:
     for row in rows:
         instance_id = row[1]
         cmd = ['aws', 'ec2', 'start-instances', '--instance-ids', instance_id]
-        print("Running command:" + " ".join(cmd))
+        print("Running command: " + " ".join(cmd))
         output = subprocess.run(cmd, capture_output=True, text=True)
         print(output.stdout)
         print(output.stderr)
