@@ -13,6 +13,7 @@ jobs:
   print_hw:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: |
           echo "${{ inputs.hardware_config }}"
           echo "$HW_CONFIG 2"
