@@ -21,4 +21,7 @@ jobs:
           HW_CONFIG: ${{ inputs.hardware_config }}
       - run: python ./scripts/regression/regression.py
         env:
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
+          CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
+          CI_DB_USERNAME: ${{ secrets.CI_DB_USERNAME }}
+          CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
