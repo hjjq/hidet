@@ -1,7 +1,7 @@
 import os
+import time
 import subprocess
 import mysql.connector
-
 
 # e.g., '1,2,3'
 hw_config_ids = os.environ.get('HW_CONFIG')
@@ -16,6 +16,8 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
+instances = []
+# Fetch list of (cloud_provider_id, instance_id) tuples from DB
 for hw_config_id in hw_config_ids:
     query = (
         'SELECT cloud_provider_id, instance_id FROM cloud_instance '
@@ -25,15 +27,42 @@ for hw_config_id in hw_config_ids:
     rows = cursor.fetchall()
     if len(rows) == 0:
         raise ValueError(f'Instance with hardware config id {hw_config_id} does not exist.')
-    for row in rows:
-        instance_id = row[1]
-        cmd = ['aws', 'ec2', 'start-instances', '--instance-ids', instance_id]
-        print("Running command: " + " ".join(cmd))
-        output = subprocess.run(cmd, capture_output=True, text=True)
-        print(output.stdout)
-        print(output.stderr)
-        if output.returncode != 0:
-            raise RuntimeError("Failed to launch AWS instance.")
+    instances.append(rows[0])
 
+# Close DB connection
 cursor.close()
 conn.close()
+
+# Launch all instances
+for instance in instances:
+    cloud_provider_id, instance_id = instance
+    if cloud_provider_id == 1: # AWS
+        cmd = ['aws', 'ec2', 'start-instances', '--instance-ids', instance_id]
+    else:
+        raise ValueError(f'Unknown cloud provider id: {cloud_provider_id}')
+    print("Running command: " + " ".join(cmd))
+    output = subprocess.run(cmd, capture_output=True, text=True)
+    print(output.stdout)
+    print(output.stderr)
+    if output.returncode != 0:
+        raise RuntimeError(f'Failed to start instance {instance_id} on cloud provider {cloud_provider_id}.')
+
+# Wait until all instances are running
+for instance in instances:
+    cloud_provider_id, instance_id = instance
+    started = False
+    while not started:
+        time.sleep(5)
+        if cloud_provider_id == 1: # AWS
+            cmd = ['aws', 'ec2', 'describe-instance-status', '--instance-ids', instance_id]
+            print("Running command: " + " ".join(cmd))
+            output = subprocess.run(cmd, capture_output=True, text=True)
+            print(output.stdout)
+            print(output.stderr)
+            if output.returncode != 0:
+                raise RuntimeError(f'Failed to check status for {instance_id} on cloud provider {cloud_provider_id}.')
+            if output.stdout.count('ok') >= 2:
+                started = True
+        else:
+            raise ValueError(f'Unknown cloud provider id: {cloud_provider_id}')
+    
