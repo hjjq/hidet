@@ -5,7 +5,7 @@ import subprocess
 
 
 started_instances = os.environ.get('STARTED_INSTANCES')
-print(started_instances)
+print("stop_instances.py: started_instances =" + started_instances)
 
 # # Launch all instances
 # for instance in instances:
