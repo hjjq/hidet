@@ -73,8 +73,6 @@ instances_str = ''
 for instance in instances:
     cloud_provider_id, instance_id = instance
     instances_str += f'{cloud_provider_id},{instance_id};'
-cmd = ['echo', f'"started_instances=\'{instances_str}\'"', '>>', '"$GITHUB_OUTPUT"']
-run_command(cmd)
-cmd = ['echo', '"test=hello"', '>>', '"$GITHUB_OUTPUT"']
-run_command(cmd)
-print(os.environ.get('GITHUB_OUTPUT'))
+with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+    print(f'started_instances={instances_str}', file=fh)
+    print(f'test=hello', file=fh)
