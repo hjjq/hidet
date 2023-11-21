@@ -74,7 +74,7 @@ for instance in instances:
 # e.g., "1,aws-instance0;1,aws-instance1;2,gcp-instance0" representing two AWS instances and one GCP instance
 instances_str = ''
 for instance in instances:
-    cloud_provider_id, instance_id = instance
+    cloud_provider_id, instance_id, _ = instance
     instances_str += f'{cloud_provider_id},{instance_id};'
 with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
     print(f'started_instances={instances_str}', file=fh)
