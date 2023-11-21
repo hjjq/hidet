@@ -40,7 +40,7 @@ for hw_config_id in hw_config_ids:
 cursor.close()
 conn.close()
 
-# # Launch all instances
+# # Start all instances
 # for instance in instances:
 #     cloud_provider_id, instance_id = instance
 #     if cloud_provider_id == 1: # AWS
@@ -75,4 +75,3 @@ for instance in instances:
     instances_str += f'{cloud_provider_id},{instance_id};'
 with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
     print(f'started_instances={instances_str}', file=fh)
-    print(f'test=hello', file=fh)

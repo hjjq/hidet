@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       started_instances: ${{ steps.run_py_script.outputs.started_instances }}
-      test: ${{ steps.run_py_script.outputs.test }}
     steps:
       - uses: actions/checkout@v4
       - run: pip install mysql-connector-python
@@ -41,4 +40,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           STARTED_INSTANCES: ${{ needs.start_instances.outputs.started_instances }}
-          TEST: ${{ needs.start_instances.outputs.test }}
