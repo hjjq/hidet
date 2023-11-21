@@ -75,6 +75,6 @@ for instance in instances:
     instances_str += f'{cloud_provider_id},{instance_id};'
 cmd = ['echo', f'"started_instances=\'{instances_str}\'"', '>>', '"$GITHUB_OUTPUT"']
 run_command(cmd)
-cmd = ['echo', 'test=hello', '>>', '"$GITHUB_OUTPUT"']
+cmd = ['echo', '"test=hello"', '>>', '"$GITHUB_OUTPUT"']
 run_command(cmd)
 print(os.environ.get('GITHUB_OUTPUT'))
