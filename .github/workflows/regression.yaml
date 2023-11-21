@@ -10,28 +10,32 @@ on:
 
 
 jobs:
-  # start_instances:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     started_instances: ${{ steps.run_py_script.outputs.started_instances }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - run: pip install mysql-connector-python
-  #     - id: run_py_script
-  #       run: timeout 900 python ./.github/scripts/start_instances.py
-  #       env:
-  #         HW_CONFIG: ${{ inputs.hardware_config }}
-  #         CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
-  #         CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
-  #         CI_DB_USERNAME: ${{ secrets.CI_DB_USERNAME }}
-  #         CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         AWS_DEFAULT_REGION: us-east-1
-  #     - run: sleep 20
+  start_instances:
+    runs-on: ubuntu-latest
+    outputs:
+      started_instances: ${{ steps.run_py_script.outputs.started_instances }}
+      hw_configs: ${{ steps.run_py_script.outputs.hw_configs }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install mysql-connector-python
+      - id: run_py_script
+        run: timeout 900 python ./.github/scripts/start_instances.py
+        env:
+          HW_CONFIG: ${{ inputs.hardware_config }}
+          CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
+          CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
+          CI_DB_USERNAME: ${{ secrets.CI_DB_USERNAME }}
+          CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
 
   run_tests:
-    runs-on: [A10]
+    needs: start_instances
+    strategy:
+      matrix:
+        hw_configs: ${{ fromJSON(needs.start_instances.outputs.hw_configs) }}
+    runs-on: ${{ matrix.hw_configs }}
     container:
       image: nvcr.io/nvidia/pytorch:23.10-py3
       options: --gpus all
