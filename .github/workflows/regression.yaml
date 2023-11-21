@@ -68,7 +68,7 @@ jobs:
     needs: [start_instance, run_tests]
     steps:
       - uses: actions/checkout@v4
-      - run: python ./.github/scripts/stop_instances.py
+      - run: timeout 900 python ./.github/scripts/stop_instances.py
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
