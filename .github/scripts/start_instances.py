@@ -89,6 +89,6 @@ for instance in instances:
     s += '\\",'
     hw_config_json += s
 # Replace trailing comma with closing bracket
-hw_config_json[-1] = ']'
+hw_config_json = hw_config_json[:-1] + ']'
 with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
     print(f'hw_configs={hw_config_json}', file=fh)
