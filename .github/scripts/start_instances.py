@@ -40,32 +40,32 @@ for hw_config_id in hw_config_ids:
 cursor.close()
 conn.close()
 
-# # Start all instances
-# for instance in instances:
-#     cloud_provider_id, instance_id = instance
-#     if cloud_provider_id == 1: # AWS
-#         cmd = ['aws', 'ec2', 'start-instances', '--instance-ids', instance_id]
-#     else:
-#         raise ValueError(f'Unknown cloud provider id: {cloud_provider_id}')
-#     output = run_command(cmd)
-#     if output.returncode != 0:
-#         raise RuntimeError(f'Failed to start instance {instance_id} on cloud provider {cloud_provider_id}.')
+# Start all instances
+for instance in instances:
+    cloud_provider_id, instance_id = instance
+    if cloud_provider_id == 1: # AWS
+        cmd = ['aws', 'ec2', 'start-instances', '--instance-ids', instance_id]
+    else:
+        raise ValueError(f'Unknown cloud provider id: {cloud_provider_id}')
+    output = run_command(cmd)
+    if output.returncode != 0:
+        raise RuntimeError(f'Failed to start instance {instance_id} on cloud provider {cloud_provider_id}.')
 
-# # Wait until all instances are running
-# for instance in instances:
-#     cloud_provider_id, instance_id = instance
-#     started = False
-#     while not started:
-#         time.sleep(5)
-#         if cloud_provider_id == 1: # AWS
-#             cmd = ['aws', 'ec2', 'describe-instance-status', '--instance-ids', instance_id]
-#             output = run_command(cmd)
-#             if output.returncode != 0:
-#                 raise RuntimeError(f'Failed to check status for {instance_id} on cloud provider {cloud_provider_id}.')
-#             if output.stdout.count('ok') >= 2:
-#                 started = True
-#         else:
-#             raise ValueError(f'Unknown cloud provider id: {cloud_provider_id}')
+# Wait until all instances are running
+for instance in instances:
+    cloud_provider_id, instance_id = instance
+    started = False
+    while not started:
+        time.sleep(5)
+        if cloud_provider_id == 1: # AWS
+            cmd = ['aws', 'ec2', 'describe-instance-status', '--instance-ids', instance_id]
+            output = run_command(cmd)
+            if output.returncode != 0:
+                raise RuntimeError(f'Failed to check status for {instance_id} on cloud provider {cloud_provider_id}.')
+            if output.stdout.count('ok') >= 2:
+                started = True
+        else:
+            raise ValueError(f'Unknown cloud provider id: {cloud_provider_id}')
 
 # Set output for github action
 # e.g., "1,aws-instance0;1,aws-instance1;2,gcp-instance0" representing two AWS instances and one GCP instance
