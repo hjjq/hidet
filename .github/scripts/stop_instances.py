@@ -2,11 +2,8 @@ import os
 import time
 import subprocess
 
-
-
 instances = os.environ.get('STARTED_INSTANCES').replace(' ', '')
 instances = [s for s in instances.split(';') if s]
-
 # Stop all instances
 for instance in instances:
     ids = [s for s in instance.split(',') if s]
