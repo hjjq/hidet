@@ -10,9 +10,9 @@ def run_command(cmd):
     print(output.stderr)
     return output
 
-# e.g., '1,2,3'
-hw_config_ids = os.environ.get('HW_CONFIG')
-hw_config_ids = hw_config_ids.split(',')
+# e.g., ' 1, 2, ,3,,' -> ['1', '2', '3']
+hw_config_ids = os.environ.get('HW_CONFIG').replace(' ', '')
+hw_config_ids = [s for s in hw_config_ids.split(',') if s]
 
 conn = mysql.connector.connect(
     host=os.environ.get('CI_DB_HOSTNAME'),

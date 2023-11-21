@@ -4,13 +4,14 @@ import subprocess
 
 
 
-started_instances = os.environ.get('STARTED_INSTANCES')
-instances = started_instances.split(';')
+instances = os.environ.get('STARTED_INSTANCES').replace(' ', '')
+instances = [s for s in instances.split(';') if s]
 
 # Stop all instances
 for instance in instances:
-    cloud_provider_id, instance_id = instance.split(',')
-    cloud_provider_id = int(cloud_provider_id)
+    ids = [s for s in instance.split(',') if s]
+    cloud_provider_id = int(ids[0])
+    instance_id = ids[1]
     if cloud_provider_id == 1: # AWS
         cmd = ['aws', 'ec2', 'stop-instances', '--instance-ids', instance_id]
     else:
