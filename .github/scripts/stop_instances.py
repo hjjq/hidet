@@ -7,7 +7,7 @@ import subprocess
 started_instances = os.environ.get('STARTED_INSTANCES')
 instances = started_instances.split(';')
 
-# Launch all instances
+# Stop all instances
 for instance in instances:
     cloud_provider_id, instance_id = instance.split(',')
     if cloud_provider_id == 1: # AWS
