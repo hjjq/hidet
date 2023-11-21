@@ -84,9 +84,9 @@ with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
 hw_config_json = '['
 for instance in instances:
     _, _, hw_config = instance
-    s = '\\"'
+    s = '\"'
     s += hw_config
-    s += '\\",'
+    s += '\",'
     hw_config_json += s
 # Replace trailing comma with closing bracket
 hw_config_json = hw_config_json[:-1] + ']'
