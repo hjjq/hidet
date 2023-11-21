@@ -27,7 +27,7 @@ instances = []
 # Fetch list of (cloud_provider_id, instance_id) tuples from DB
 for hw_config_id in hw_config_ids:
     query = (
-        'SELECT cloud_provider_id, instance_id, hardware_config.name as hw_config, FROM cloud_instance '
+        'SELECT cloud_provider_id, instance_id, hardware_config.name as hw_config FROM cloud_instance '
         'JOIN hardware_config ON cloud_instance.hardware_config_id = hardware_config.id '
         f'WHERE hardware_config_id = {hw_config_id} LIMIT 1'
     )
