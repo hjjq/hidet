@@ -6,6 +6,8 @@ import json
 # print(run_configs)
 
 sha = os.environ.get('COMMIT_SHA')
+commit_time = os.environ.get('COMMIT_TIME')
 repo_name = os.environ.get('REPO_NAME')
 print(sha)
+print(commit_time)
 print(repo_name)
