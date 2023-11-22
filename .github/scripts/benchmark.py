@@ -18,6 +18,6 @@ hw_config = os.environ.get('HW_CONFIG')
 print('hw:', hw_config)
 for run_config in run_configs:
     run_config['hardware_config'] = hw_config
-    run_config['latency'] = np.random.randn()
+    run_config['latency'] = np.random.random() * 10
 with open('run_configs.json', 'w') as fh:
     json.dump(run_configs, fh)
