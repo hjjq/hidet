@@ -98,7 +98,7 @@ jobs:
   
   upload_results:
     runs-on: ubuntu-latest
-    needs: [run_tests]
+    needs: [start_instances, run_tests]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -109,6 +109,8 @@ jobs:
       - run: |
           COMMIT_TIME=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')
           echo "COMMIT_TIME=$COMMIT_TIME" >> $GITHUB_ENV
+          COMMIT_AUTHOR=$(git log -1 --format=%an)
+          echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
 
       - name: Run main Python script
         run: python ./.github/scripts/upload_results.py
@@ -116,6 +118,8 @@ jobs:
           REPO_NAME: ${{ github.repository }}
           COMMIT_SHA: ${{ github.sha }}
           COMMIT_TIME: ${{ env.COMMIT_TIME }}
+          COMMIT_AUTHOR: ${{ env.COMMIT_AUTHOR }}
+          HW_CONFIGS: ${{ fromJSON(needs.start_instances.outputs.hw_configs) }}
 
   stop_instances:
     if: ${{ inputs.shutdown_instances }}
