@@ -1,7 +1,6 @@
 import os
 import json
 import mysql.connector
-import numpy as np
 
 # Get environment variables
 commit_sha = os.environ.get('COMMIT_SHA')
