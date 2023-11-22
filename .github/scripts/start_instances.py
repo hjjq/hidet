@@ -51,8 +51,12 @@ query = (
 cursor.execute(query)
 rows = cursor.fetchall()
 for row in rows:
-    print(row)
-    run_configs.append(row)
+    model_id, model_name, param_id, param_name = row
+    run_configs.append({'model_id': int(model_id), 'model_name': model_name,
+                        'param_id': int(param_id), 'param_name': param_name
+                        })
+with open('run_configs.json', 'w') as fh:
+    json.dump(run_configs, fh)
 
 # Close DB connection
 cursor.close()
