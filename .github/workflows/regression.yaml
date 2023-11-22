@@ -46,6 +46,7 @@ jobs:
         with:
           name: run_configs
           path: run_configs.json
+          retention-days: 1
 
   run_tests:
     needs: start_instances
@@ -91,8 +92,9 @@ jobs:
       - name: Upload run configs
         uses: actions/upload-artifact@v3
         with:
-          name: run_configs
+          name: run_configs_${{ matrix.hw_configs }}
           path: run_configs.json
+          retention-days: 1
   
   upload_results:
     runs-on: ubuntu-latest
@@ -103,11 +105,14 @@ jobs:
 
       - name: Download run configs
         uses: actions/download-artifact@v3
-        with:
-          name: run_configs
+      
+      - run: ls -R
 
       - name: Run main Python script
         run: python ./.github/scripts/upload_results.py
+        env:
+          REPO_NAME: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
 
   stop_instances:
     if: ${{ inputs.shutdown_instances }}
@@ -117,7 +122,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run main Python script
-        run: timeout 900 python ./.github/scripts/stop_instances.py
-        env:
-          STARTED_INSTANCES: ${{ needs.start_instances.outputs.started_instances }}
+      - run: ls -R
+
+      # - name: Run main Python script
+      #   run: timeout 900 python ./.github/scripts/stop_instances.py
+      #   env:
+      #     STARTED_INSTANCES: ${{ needs.start_instances.outputs.started_instances }}
