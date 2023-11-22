@@ -38,7 +38,7 @@ for hw_config_id in hw_config_ids:
         raise ValueError(f'Instance with hardware config id {hw_config_id} does not exist.')
     instances.append(rows[0])
 
-# Store a json containing all the required models (and inputs) for this regression run
+# Store a json containing all the required model/OPs (and inputs) for this regression run
 # This json will be uploaded as an artifact, and will be filled in by subsequent jobs
 # For now, we run all model/input combinations by default
 run_configs = []
@@ -52,7 +52,20 @@ cursor.execute(query)
 rows = cursor.fetchall()
 for row in rows:
     model_id, model_name, param_id, param_name = row
-    run_configs.append({'model_id': int(model_id), 'model_name': model_name,
+    run_configs.append({'type': 'model', 'id': int(model_id), 'name': model_name, 
+                        'param_id': int(param_id), 'param_name': param_name
+                        })
+query = (
+    'SELECT operator.id as operator_id, operator.name as operator_name, input_parameter.id as param_id, '
+    'input_parameter.parameter as param_name FROM operator JOIN operator_input_parameter ON '
+    'operator.id = operator_input_parameter.operator_id JOIN input_parameter ON '
+    'operator_input_parameter.input_parameter_id = input_parameter.id'
+)
+cursor.execute(query)
+rows = cursor.fetchall()
+for row in rows:
+    op_id, op_name, param_id, param_name = row
+    run_configs.append({'type': 'operator', 'id': int(op_id), 'name': op_name, 
                         'param_id': int(param_id), 'param_name': param_name
                         })
 with open('run_configs.json', 'w') as fh:

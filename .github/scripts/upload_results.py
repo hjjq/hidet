@@ -7,7 +7,11 @@ import json
 
 sha = os.environ.get('COMMIT_SHA')
 commit_time = os.environ.get('COMMIT_TIME')
+commit_author = os.environ.get('COMMIT_AUTHOR')
 repo_name = os.environ.get('REPO_NAME')
+hw_configs = os.environ.get('HW_CONFIGS')
 print(sha)
 print(commit_time)
+print(commit_author)
 print(repo_name)
+print(hw_configs)
