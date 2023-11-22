@@ -14,10 +14,10 @@ fh = open('run_configs.json')
 run_configs = json.load(fh)
 fh.close()
 print(run_configs)
-hw_config_id = int(os.environ.get('HW_CONFIG'))
-print('hw:', hw_config_id)
+hw_config = os.environ.get('HW_CONFIG')
+print('hw:', hw_config)
 for run_config in run_configs:
-    run_config['hardware_config_id'] = hw_config_id
+    run_config['hardware_config'] = hw_config
     run_config['latency'] = np.random.randn()
 with open('run_configs.json', 'w') as fh:
     json.dump(run_configs, fh)
