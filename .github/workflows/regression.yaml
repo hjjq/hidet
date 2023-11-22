@@ -76,7 +76,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: run_configs
-          path: run_configs.json
       
       - name: Run benchmarks
         run: |
