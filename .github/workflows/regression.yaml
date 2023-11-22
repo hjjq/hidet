@@ -119,7 +119,7 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
           COMMIT_TIME: ${{ env.COMMIT_TIME }}
           COMMIT_AUTHOR: ${{ env.COMMIT_AUTHOR }}
-          HW_CONFIGS: ${{ fromJSON(needs.start_instances.outputs.hw_configs) }}
+          HW_CONFIGS: ${{ needs.start_instances.outputs.hw_configs }}
 
   stop_instances:
     if: ${{ inputs.shutdown_instances }}
