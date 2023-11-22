@@ -57,7 +57,7 @@ for hw_config in  hw_configs:
         run_hw_config_id = hw_config_map[run_hw_config]
         query = (
             f'INSERT INTO {run_type}_result (commit_id, {run_type}_id, input_parameter_id, hardware_config_id, '
-            f'dtype_id, latency) VALUES (%d, %d, %d, %d, %d, %f)'
+            f'dtype_id, latency) VALUES (%s, %s, %s, %s, %s, %s)'
         )
         val = (commit_id, run_id, run_param_id, run_hw_config_id, 1, run_latency)
         cursor.execute(query, val)
