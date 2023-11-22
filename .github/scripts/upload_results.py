@@ -15,3 +15,11 @@ print(commit_time)
 print(commit_author)
 print(repo_name)
 print(hw_configs)
+
+hw_configs = json.loads(hw_configs)
+for hw_config in  hw_configs:
+    artifact_path = f'./run_configs_{hw_config}/run_configs.json'
+    fh = open(artifact_path)
+    run_configs = json.load(fh)
+    fh.close()
+    print(run_configs)
