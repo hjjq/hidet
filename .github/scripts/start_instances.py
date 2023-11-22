@@ -2,6 +2,7 @@ import os
 import time
 import subprocess
 import mysql.connector
+import json
 
 def run_command(cmd):
     print("Running command: " + " ".join(cmd))
@@ -36,6 +37,22 @@ for hw_config_id in hw_config_ids:
     if len(rows) == 0:
         raise ValueError(f'Instance with hardware config id {hw_config_id} does not exist.')
     instances.append(rows[0])
+
+# Store a json containing all the required models (and inputs) for this regression run
+# This json will be uploaded as an artifact, and will be filled in by subsequent jobs
+# For now, we run all model/input combinations by default
+run_configs = []
+query = (
+    'SELECT model.id as model_id, model.name as model_name, input_parameter.id as param_id, '
+    'input_parameter.parameter as param_name FROM model JOIN model_input_parameter ON '
+    'model.id = model_input_parameter.model_id JOIN input_parameter ON '
+    'model_input_parameter.input_parameter_id = input_parameter.id'
+)
+cursor.execute(query)
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
+    run_configs.append(row)
 
 # Close DB connection
 cursor.close()
@@ -81,14 +98,17 @@ with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
 
 # String representing JSON Array of hardware configs of the runners
 # e.g., "[\"A10\", \"A100\", \"RTX4090\"]"
-hw_config_json = '['
+# hw_config_json = '['
+hw_configs = []
 for instance in instances:
     _, _, hw_config = instance
-    s = '\"'
-    s += hw_config
-    s += '\",'
-    hw_config_json += s
+    hw_configs.append(hw_config)
+    # s = '\"'
+    # s += hw_config
+    # s += '\",'
+    # hw_config_json += s
 # Replace trailing comma with closing bracket
-hw_config_json = hw_config_json[:-1] + ']'
+# hw_config_json = hw_config_json[:-1] + ']'
+hw_config_json_str = json.dumps(hw_configs)
 with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-    print(f'hw_configs={hw_config_json}', file=fh)
+    print(f'hw_configs={hw_config_json_str}', file=fh)

@@ -7,6 +7,14 @@ on:
         description: 'Hardware Configuration ID(s), comma separated'
         required: true
         default: '2'
+env:
+  CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
+  CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
+  CI_DB_USERNAME: ${{ secrets.CI_DB_USERNAME }}
+  CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
 
 
 jobs:
@@ -22,13 +30,6 @@ jobs:
         run: timeout 900 python ./.github/scripts/start_instances.py
         env:
           HW_CONFIG: ${{ inputs.hardware_config }}
-          CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
-          CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
-          CI_DB_USERNAME: ${{ secrets.CI_DB_USERNAME }}
-          CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
 
   run_tests:
     needs: start_instances
@@ -46,6 +47,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
+          pip install -r ./.github/requirements-ci.txt
       
       - name: Build hidet
         run: |
@@ -70,7 +72,4 @@ jobs:
       - uses: actions/checkout@v4
       - run: timeout 900 python ./.github/scripts/stop_instances.py
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
           STARTED_INSTANCES: ${{ needs.start_instances.outputs.started_instances }}
