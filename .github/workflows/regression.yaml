@@ -103,10 +103,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: pip install mysql-connector-python
+
       - name: Download run configs
         uses: actions/download-artifact@v3
       
-      - run: |
+      - name: Setup ENV
+        run: |
           COMMIT_TIME=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')
           echo "COMMIT_TIME=$COMMIT_TIME" >> $GITHUB_ENV
           COMMIT_AUTHOR=$(git log -1 --format=%an)
