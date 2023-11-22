@@ -106,13 +106,16 @@ jobs:
       - name: Download run configs
         uses: actions/download-artifact@v3
       
-      - run: ls -R
+      - run: |
+          COMMIT_TIME=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')
+          echo "COMMIT_TIME=$COMMIT_TIME" >> $GITHUB_ENV
 
       - name: Run main Python script
         run: python ./.github/scripts/upload_results.py
         env:
           REPO_NAME: ${{ github.repository }}
           COMMIT_SHA: ${{ github.sha }}
+          COMMIT_TIME: ${{ env.COMMIT_TIME }}
 
   stop_instances:
     if: ${{ inputs.shutdown_instances }}
@@ -122,9 +125,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - run: ls -R
-
-      # - name: Run main Python script
-      #   run: timeout 900 python ./.github/scripts/stop_instances.py
-      #   env:
-      #     STARTED_INSTANCES: ${{ needs.start_instances.outputs.started_instances }}
+      - name: Run main Python script
+        run: timeout 900 python ./.github/scripts/stop_instances.py
+        env:
+          STARTED_INSTANCES: ${{ needs.start_instances.outputs.started_instances }}
