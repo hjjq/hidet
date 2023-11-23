@@ -114,18 +114,10 @@ with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
     print(f'started_instances={instances_str}', file=fh)
 
 # String representing JSON Array of hardware configs of the runners
-# e.g., "[\"A10\", \"A100\", \"RTX4090\"]"
-# hw_config_json = '['
 hw_configs = []
 for instance in instances:
     _, _, hw_config = instance
     hw_configs.append(hw_config)
-    # s = '\"'
-    # s += hw_config
-    # s += '\",'
-    # hw_config_json += s
-# Replace trailing comma with closing bracket
-# hw_config_json = hw_config_json[:-1] + ']'
 hw_config_json_str = json.dumps(hw_configs)
 with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
     print(f'hw_configs={hw_config_json_str}', file=fh)

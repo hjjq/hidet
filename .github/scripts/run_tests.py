@@ -1,5 +1,6 @@
 import os
 import json
+import subprocess
 import mysql.connector
 import numpy as np
 
@@ -22,15 +23,32 @@ import numpy as np
 # with open('run_configs.json', 'w') as fh:
 #     json.dump(run_configs, fh)
 
-def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name):
-    cmd = ['python']
-    if run_name in ['bert-base-uncased', 'other models that share same interface']:
-        pass
-    elif run_name in ['another group of models/operators']:
-        pass
+def run_command(cmd):
+    print("Running command: " + " ".join(cmd))
+    output = subprocess.run(cmd, capture_output=True, text=True)
+    return output
 
+def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype):
+    # Get the name of the benchmark script from DB
+    conn = mysql.connector.connect(
+        host=os.environ.get('CI_DB_HOSTNAME'),
+        user=os.environ.get('CI_DB_USERNAME'),
+        password=os.environ.get('CI_DB_PASSWORD'),
+        port=os.environ.get('CI_DB_PORT'),
+        database='hidet_ci'
+    )
+    cursor = conn.cursor()
+    query = f'SELECT runfile FROM {run_type} WHERE id = {run_id}'
+    cursor.execute(query)
+    runfile = cursor.fetchall()[0][0]
+    cursor.close()
+    conn.close()
+    cmd = ['python', runfile, '--params', run_param_name, '--dtype', dtype]
     return cmd
 
 run_type, run_id, run_name, run_param_id, run_param_name = 'model', 1, 'bert-base-uncased', 1, 'seqlen=256'
-
-cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name)
+dtype = 'float16'
+cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype)
+output = run_command(cmd)
+latency = float(output.stdout.split('\n')[0]) # Get first line
+print(latency)
