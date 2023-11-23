@@ -26,6 +26,8 @@ import numpy as np
 def run_command(cmd):
     print("Running command: " + " ".join(cmd))
     output = subprocess.run(cmd, capture_output=True, text=True)
+    print(output.stdout)
+    print(output.stderr)
     return output
 
 def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype):
@@ -43,12 +45,12 @@ def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtyp
     runfile = cursor.fetchall()[0][0]
     cursor.close()
     conn.close()
-    cmd = ['python', runfile, '--params', run_param_name, '--dtype', dtype]
+    cmd = ['python', runfile, run_name, '--params', run_param_name, '--dtype', dtype]
     return cmd
 
 run_type, run_id, run_name, run_param_id, run_param_name = 'model', 1, 'bert-base-uncased', 1, 'seqlen=256'
 dtype = 'float16'
 cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype)
 output = run_command(cmd)
-latency = float(output.stdout.split('\n')[0]) # Get first line
+latency = (output.stdout.split('\n')[0]) # Get first line
 print(latency)
