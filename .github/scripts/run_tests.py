@@ -3,6 +3,7 @@ import json
 import subprocess
 import mysql.connector
 import numpy as np
+import tqdm
 
 # fh = open('run_configs.json')
 # run_configs = json.load(fh)
@@ -24,8 +25,9 @@ import numpy as np
 #     json.dump(run_configs, fh)
 
 def run_command(cmd):
-    print("Running command: " + " ".join(cmd))
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    cmd = " ".join(cmd)
+    print("Running command: " + cmd)
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
     outputs = []
     for line in popen.stdout:
         print(line, end='')
@@ -33,6 +35,9 @@ def run_command(cmd):
     popen.stdout.close()
     ret = popen.wait()
     if ret:
+        print('STDERR:')
+        for line in popen.stderr:
+            print(line, end='')
         raise RuntimeError(f'Command {cmd} failed with return code {ret}.')
     return outputs
 
