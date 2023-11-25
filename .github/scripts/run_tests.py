@@ -25,10 +25,16 @@ import numpy as np
 
 def run_command(cmd):
     print("Running command: " + " ".join(cmd))
-    output = subprocess.run(cmd, capture_output=True, text=True)
-    print(output.stdout)
-    print(output.stderr)
-    return output
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    outputs = []
+    for line in popen.stdout:
+        print(line, end='')
+        outputs.append(line)
+    popen.stdout.close()
+    ret = popen.wait()
+    if ret:
+        raise RuntimeError(f'Command {cmd} failed with return code {ret}.')
+    return outputs
 
 def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype):
     # Get the name of the benchmark script from DB
@@ -51,6 +57,6 @@ def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtyp
 run_type, run_id, run_name, run_param_id, run_param_name = 'model', 1, 'bert-base-uncased', 1, 'seqlen=256'
 dtype = 'float16'
 cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype)
-output = run_command(cmd)
-latency = (output.stdout.split('\n')[0]) # Get first line
-print(latency)
+outputs = run_command(cmd)
+latency = float(outputs[-1].split('\n')[0]) # Get last line
+print(f'Latency = {latency}')

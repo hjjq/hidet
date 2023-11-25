@@ -74,6 +74,6 @@ parser.add_argument(
 args = parser.parse_args()
 
 model, dtype = args.model, args.dtype
-seqlen = args.params.split('=')[1]
+seqlen = int(args.params.split('=')[1])
 latency = bench_hf_transformers(model, seqlen, dtype)
 print(latency)
