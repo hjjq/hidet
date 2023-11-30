@@ -14,6 +14,9 @@ model_class = {
 }
 
 def bench_hf_transformers(model_name, seqlen, dtype):
+    if model_name in ['llama-7b', 'gpt2']:
+        # TODO: actually run these models
+        return 0.0
     setup_hidet_flags(dtype)
     dtype = getattr(torch, dtype)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -31,27 +34,28 @@ def bench_hf_transformers(model_name, seqlen, dtype):
         del model
     return latency
 
-parser = argparse.ArgumentParser(prog='Benchmark Transformers')
-parser.add_argument(
-    'model',
-    type=str,
-    help='Specify model'
-)
-parser.add_argument(
-    '--params',
-    type=str,
-    default='seqlen=1024',
-    help='Specify Input Parameters. E.g., seqlen=1024'
-)
-parser.add_argument(
-    '--dtype',
-    type=str,
-    default='float16',
-    help='Specify precision. E.g., float32'
-)
-args = parser.parse_args()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='Benchmark Transformers')
+    parser.add_argument(
+        'model',
+        type=str,
+        help='Specify model'
+    )
+    parser.add_argument(
+        '--params',
+        type=str,
+        default='seqlen=1024',
+        help='Specify Input Parameters. E.g., seqlen=1024'
+    )
+    parser.add_argument(
+        '--dtype',
+        type=str,
+        default='float16',
+        help='Specify precision. E.g., float32'
+    )
+    args = parser.parse_args()
 
-model, dtype = args.model, args.dtype
-seqlen = int(args.params.split('=')[1])
-latency = bench_hf_transformers(model, seqlen, dtype)
-print(latency)
+    model, dtype = args.model, args.dtype
+    seqlen = int(args.params.split('=')[1])
+    latency = bench_hf_transformers(model, seqlen, dtype)
+    print(latency)
