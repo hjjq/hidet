@@ -23,7 +23,7 @@ def run_command(cmd):
         raise RuntimeError(f'Command {cmd} failed with return code {ret}.')
     return outputs
 
-def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype):
+def get_bench_cmd(run_type, run_id, run_name, run_param_name, dtype):
     # Get the name of the benchmark script from DB
     conn = mysql.connector.connect(
         host=os.environ.get('CI_DB_HOSTNAME'),
@@ -44,7 +44,6 @@ def get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtyp
 fh = open('run_configs.json')
 run_configs = json.load(fh)
 fh.close()
-print(run_configs)
 hw_config = os.environ.get('HW_CONFIG')
 print('hw:', hw_config)
 for run_config in run_configs:
@@ -56,24 +55,11 @@ for run_config in run_configs:
     run_name = run_config['name']
     run_param_id = run_config['param_id']
     run_param_name = run_config['param_name']
-    cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, 'float16')
+    run_dtype_id = run_config['dtype_id']
+    run_dtype_name = run_config['dtype_name']
+    cmd = get_bench_cmd(run_type, run_id, run_name, run_param_name, run_dtype_name)
     outputs = run_command(cmd)
     latency = float(outputs[-1].split('\n')[0]) # Get last line
-    run_config['dtype_id'] = 1
-    run_config['dtype_name'] = 'float16'
     run_config['latency'] = latency
 with open('run_configs.json', 'w') as fh:
     json.dump(run_configs, fh)
-
-# run_type, run_id, run_name, run_param_id, run_param_name = 'model', 1, 'bert-base-uncased', 1, 'seqlen=256'
-# dtype = 'float16'
-# cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype)
-# outputs = run_command(cmd)
-# latency = float(outputs[-1].split('\n')[0]) # Get last line
-# print(f'{run_name} Latency = {latency}')
-
-# run_type, run_id, run_name, run_param_id, run_param_name = 'model', 4, 'resnet50', 4, '1x3x224x224'
-# cmd = get_bench_cmd(run_type, run_id, run_name, run_param_id, run_param_name, dtype)
-# outputs = run_command(cmd)
-# latency = float(outputs[-1].split('\n')[0]) # Get last line
-# print(f'{run_name} Latency = {latency}')

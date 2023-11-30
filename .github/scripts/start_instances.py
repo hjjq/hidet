@@ -44,29 +44,33 @@ for hw_config_id in hw_config_ids:
 run_configs = []
 query = (
     'SELECT model.id as model_id, model.name as model_name, input_parameter.id as param_id, '
-    'input_parameter.parameter as param_name FROM model JOIN model_input_parameter ON '
+    'input_parameter.parameter as param_name, dtype.id as dtype_id, dtype.name as dtype_name '
+    'FROM model JOIN model_input_parameter ON '
     'model.id = model_input_parameter.model_id JOIN input_parameter ON '
-    'model_input_parameter.input_parameter_id = input_parameter.id'
+    'model_input_parameter.input_parameter_id = input_parameter.id JOIN dtype'
 )
 cursor.execute(query)
 rows = cursor.fetchall()
 for row in rows:
-    model_id, model_name, param_id, param_name = row
+    model_id, model_name, param_id, param_name, dtype_id, dtype_name = row
     run_configs.append({'type': 'model', 'id': int(model_id), 'name': model_name, 
-                        'param_id': int(param_id), 'param_name': param_name
+                        'param_id': int(param_id), 'param_name': param_name,
+                        'dtype_id': int(dtype_id), 'dtype_name': dtype_name,
                         })
 query = (
     'SELECT operator.id as operator_id, operator.name as operator_name, input_parameter.id as param_id, '
-    'input_parameter.parameter as param_name FROM operator JOIN operator_input_parameter ON '
+    'input_parameter.parameter as param_name, dtype.id as dtype_id, dtype.name as dtype_name '
+    'FROM operator JOIN operator_input_parameter ON '
     'operator.id = operator_input_parameter.operator_id JOIN input_parameter ON '
-    'operator_input_parameter.input_parameter_id = input_parameter.id'
+    'operator_input_parameter.input_parameter_id = input_parameter.id JOIN dtype'
 )
 cursor.execute(query)
 rows = cursor.fetchall()
 for row in rows:
-    op_id, op_name, param_id, param_name = row
+    op_id, op_name, param_id, param_name, dtype_id, dtype_name = row
     run_configs.append({'type': 'operator', 'id': int(op_id), 'name': op_name, 
-                        'param_id': int(param_id), 'param_name': param_name
+                        'param_id': int(param_id), 'param_name': param_name,
+                        'dtype_id': int(dtype_id), 'dtype_name': dtype_name,
                         })
 with open('run_configs.json', 'w') as fh:
     json.dump(run_configs, fh)
