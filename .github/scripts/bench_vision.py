@@ -24,27 +24,28 @@ def bench_torchvision(model_name, shape, dtype):
     return latency
 
 
-parser = argparse.ArgumentParser(prog='Benchmark Vision Models')
-parser.add_argument(
-    'model',
-    type=str,
-    help='Specify model'
-)
-parser.add_argument(
-    '--params',
-    type=str,
-    default='1x3x224x224',
-    help='Specify Input Size. E.g., 1x3x224x224'
-)
-parser.add_argument(
-    '--dtype',
-    type=str,
-    default='float16',
-    help='Specify precision. E.g., float32'
-)
-args = parser.parse_args()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='Benchmark Vision Models')
+    parser.add_argument(
+        'model',
+        type=str,
+        help='Specify model'
+    )
+    parser.add_argument(
+        '--params',
+        type=str,
+        default='1x3x224x224',
+        help='Specify Input Size. E.g., 1x3x224x224'
+    )
+    parser.add_argument(
+        '--dtype',
+        type=str,
+        default='float16',
+        help='Specify precision. E.g., float32'
+    )
+    args = parser.parse_args()
 
-model, dtype = args.model, args.dtype
-shape = [int(d) for d in args.params.split('x')]
-latency = bench_torchvision(model, shape, dtype)
-print(latency)
+    model, dtype = args.model, args.dtype
+    shape = [int(d) for d in args.params.split('x')]
+    latency = bench_torchvision(model, shape, dtype)
+    print(latency)
