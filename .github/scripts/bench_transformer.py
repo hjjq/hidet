@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import hidet
 from transformers import AutoTokenizer, AutoModelForMaskedLM, AutoModelForCausalLM, logging
-from bench_utils import setup_hidet_flags, bench_torch_model
+from bench_utils import enable_compile_server, setup_hidet_flags, bench_torch_model
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 logging.set_verbosity_error()
 
@@ -18,6 +18,7 @@ def bench_hf_transformers(model_name, seqlen, dtype):
         # TODO: actually run these models
         return 0.0
     setup_hidet_flags(dtype)
+    enable_compile_server(True)
     dtype = getattr(torch, dtype)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     AutoModel_cls = eval(model_class[model_name])

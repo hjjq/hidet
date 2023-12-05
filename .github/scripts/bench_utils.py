@@ -28,3 +28,11 @@ def bench_torch_model(model, torch_inputs, bench_iters=100, warmup_iters=10):
 
     latency = start.elapsed_time(end) / bench_iters
     return latency
+
+def enable_compile_server(enable=True):
+    hidet.option.compile_server.addr('0.0.0.0')
+    hidet.option.compile_server.port(3281)
+    hidet.option.compile_server.username('admin')
+    hidet.option.compile_server.password('admin_password')
+    hidet.option.compile_server.repo('https://github.com/hidet-org/hidet', 'main')
+    hidet.option.compile_server.enable(flag=enable)
