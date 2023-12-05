@@ -12,6 +12,7 @@
 from __future__ import annotations
 from typing import Dict, Any, List, Optional, Callable, Iterable, Tuple, Union
 import os
+import subprocess
 import tomlkit
 
 
@@ -858,7 +859,16 @@ class cuda:
         """
         cpu_arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
         if cpu_arch == "auto":
-            cpu_arch = 'x86-64'
+            cmd = [
+                'gcc',
+                '-march=native',
+                '-Q',
+                '--help=target',
+            ]
+            out = subprocess.check_output(cmd, text=True)
+            begin = out.find('march=') + len('march=')
+            end = out.find('\n', begin)
+            cpu_arch = out[begin:end].strip()
         return cpu_arch
 
 class cpu:
@@ -887,7 +897,16 @@ class cpu:
         """
         arch: Optional[str] = OptionContext.current().get_option('cpu.arch')
         if arch == "auto":
-            arch = 'native'
+            cmd = [
+                'gcc',
+                '-march=native',
+                '-Q',
+                '--help=target',
+            ]
+            out = subprocess.check_output(cmd, text=True)
+            begin = out.find('march=') + len('march=')
+            end = out.find('\n', begin)
+            arch = out[begin:end].strip()
         return arch
 
 
