@@ -26,6 +26,9 @@ def remote_build(ir_module: IRModule, output_dir: str, *, target: str, output_ki
     if 'cuda' in target and 'arch' not in target:
         arch = hidet.option.cuda.get_arch()
         target = '{} --arch={}'.format(target, arch)
+    if 'cuda' in target and 'cpu_arch' not in target:
+        cpu_arch = hidet.option.cuda.get_cpu_arch()
+        target = '{} --cpu_arch={}'.format(target, cpu_arch)
     job_data = pickle.dumps(
         {
             'workload': pickle.dumps({'ir_module': ir_module, 'target': target, 'output_kind': output_kind}),
