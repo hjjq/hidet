@@ -235,7 +235,7 @@ class GCC(SourceCompiler):
             # support avx intrinsics
             '-mavx2',
             '-m64',
-            '-march=native',
+            # '-march=native',
             # compile into position independent code.
             '-fPIC',
             # enable OpenMP.
