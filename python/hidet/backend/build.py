@@ -151,7 +151,8 @@ class NVCC(SourceCompiler):
             # optimize host side code via -O3
             '-O3',
             # host compiler options: enable openmp, avx2, unroll loops and fast math
-            '-Xcompiler -fPIC,-m64,-march={cpu_arch},-O3,-funroll-loops,-ffast-math'.format(cpu_arch=cpu_arch),
+            # '-Xcompiler -fPIC,-m64,-march={cpu_arch},-O3,-funroll-loops,-ffast-math'.format(cpu_arch=cpu_arch),
+            '-Xcompiler -fPIC,-m64,-O3,-funroll-loops,-ffast-math'.format(cpu_arch=cpu_arch),
             # use c++11 standard
             '-std=c++11',
             # the target PTX and SASS version.
