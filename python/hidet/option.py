@@ -886,9 +886,9 @@ class cpu:
             The CPU architecture, e.g., 'x86-64', 'alderlake', etc.
         """
         arch: Optional[str] = OptionContext.current().get_option('cpu.arch')
-        if cpu_arch == "auto":
-            cpu_arch = 'x86-64'
-        return cpu_arch
+        if arch == "auto":
+            arch = 'x86-64'
+        return arch
 
 
 class compile_server:
