@@ -858,7 +858,7 @@ class cuda:
         """
         cpu_arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
         if cpu_arch == "auto":
-            cpu_arch = 'native'
+            cpu_arch = 'x86-64'
         return cpu_arch
 
 class cpu:
@@ -887,7 +887,7 @@ class cpu:
         """
         arch: Optional[str] = OptionContext.current().get_option('cpu.arch')
         if arch == "auto":
-            arch = 'x86-64'
+            arch = 'native'
         return arch
 
 
