@@ -261,6 +261,12 @@ def register_hidet_options():
         name='cuda.cpu_arch',
         type_hint='str',
         default_value='auto',
+        description='The CPU architecture to compile the host code for (e.g., "x86-64"). "auto" for auto-detect.',
+    )
+    register_option(
+        name='cpu.arch',
+        type_hint='str',
+        default_value='auto',
         description='The CPU architecture to compile the kernels for (e.g., "x86-64"). "auto" for auto-detect.',
     )
     register_option(
@@ -830,27 +836,56 @@ class cuda:
     @staticmethod
     def cpu_arch(cpu_arch: str = 'auto'):
         """
-        Set the CUDA architecture to use when building CUDA kernels.
+        Set the CPU architecture to use when compiling host side code.
 
         Parameters
         ----------
         arch: Optional[str]
-            The CUDA architecture, e.g., 'sm_35', 'sm_70', 'sm_80', etc. "auto" means
-            using the architecture of the first CUDA GPU on the current machine. Default "auto".
+            The CPU architecture, e.g., 'x86-64', 'alderlake', etc. "auto" means
+            using the architecture of the CPU on the current machine. Default "auto".
         """
-        OptionContext.current().set_option('cuda.cpu_arch', cpu_arch)
+        OptionContext.current().set_option('gpu.cpu_arch', cpu_arch)
 
     @staticmethod
     def get_cpu_arch() -> str:
         """
-        Get the CUDA architecture to use when building CUDA kernels.
+        Get the CPU architecture to use when compiling host side code.
 
         Returns
         -------
         ret: str
-            The CUDA architecture, e.g., 'sm_35', 'sm_70', 'sm_80', etc.
+            The CPU architecture, e.g., 'x86-64', 'alderlake', etc.
         """
-        cpu_arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
+        arch: Optional[str] = OptionContext.current().get_option('gpu.cpu_arch')
+        if cpu_arch == "auto":
+            cpu_arch = 'x86-64'
+        return cpu_arch
+
+class cpu:
+    @staticmethod
+    def arch(arch: str = 'auto'):
+        """
+        Set the CPU architecture to use when building CPU kernels.
+
+        Parameters
+        ----------
+        arch: Optional[str]
+            The CPU architecture, e.g., 'x86-64', 'alderlake', etc. "auto" means
+            using the architecture of the CPU on the current machine. Default "auto".
+        """
+        OptionContext.current().set_option('cpu.arch', arch)
+
+    @staticmethod
+    def get_arch() -> str:
+        """
+        Get the CPU architecture to use when building CPU kernels.
+
+        Returns
+        -------
+        ret: str
+            The CPU architecture, e.g., 'x86-64', 'alderlake', etc.
+        """
+        arch: Optional[str] = OptionContext.current().get_option('cpu.arch')
         if cpu_arch == "auto":
             cpu_arch = 'x86-64'
         return cpu_arch

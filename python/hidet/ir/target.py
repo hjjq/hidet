@@ -44,7 +44,7 @@ class Target:
     def _check(self):
         if self.name == 'cpu':
             valid_flags = []
-            valid_attrs = {}
+            valid_attrs = ['arch'] 
         elif self.name == 'cuda':
             valid_flags = []
             valid_attrs = ['arch', 'cpu_arch']  # e.g., '--arch=sm_80', '--cpu_arch=x86-64'
