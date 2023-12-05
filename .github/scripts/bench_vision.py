@@ -5,10 +5,11 @@ import numpy as np
 import torch
 import torchvision
 import hidet
-from bench_utils import setup_hidet_flags, bench_torch_model
+from bench_utils import enable_compile_server, setup_hidet_flags, bench_torch_model
 
 def bench_torchvision(model_name, shape, dtype):
     setup_hidet_flags(dtype)
+    enable_compile_server(True)
     dtype = getattr(torch, dtype)
     if any(name in model_name for name in ['deeplab', 'fcn', 'lraspp']):
         model_cls = getattr(torchvision.models.segmentation, model_name)
