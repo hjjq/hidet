@@ -834,43 +834,6 @@ class cuda:
         arch = cuda.get_arch()
         return int(arch[3]), int(arch[4])
 
-    @staticmethod
-    def cpu_arch(cpu_arch: str = 'auto'):
-        """
-        Set the CPU architecture to use when compiling host side code.
-
-        Parameters
-        ----------
-        arch: Optional[str]
-            The CPU architecture, e.g., 'x86-64', 'alderlake', etc. "auto" means
-            using the architecture of the CPU on the current machine. Default "auto".
-        """
-        OptionContext.current().set_option('cuda.cpu_arch', cpu_arch)
-
-    @staticmethod
-    def get_cpu_arch() -> str:
-        """
-        Get the CPU architecture to use when compiling host side code.
-
-        Returns
-        -------
-        ret: str
-            The CPU architecture, e.g., 'x86-64', 'alderlake', etc.
-        """
-        cpu_arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
-        if cpu_arch == "auto":
-            cmd = [
-                'gcc',
-                '-march=native',
-                '-Q',
-                '--help=target',
-            ]
-            out = subprocess.check_output(cmd, text=True)
-            begin = out.find('march=') + len('march=')
-            end = out.find('\n', begin)
-            cpu_arch = out[begin:end].strip()
-        return cpu_arch
-
 class cpu:
     @staticmethod
     def arch(arch: str = 'auto'):
