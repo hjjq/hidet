@@ -108,6 +108,8 @@ def build_ir_module(ir_module: IRModule, output_dir: str, *, target: str, output
     with hidet.option.context():
         if target.name == 'cuda' and 'arch' in target.attrs:
             hidet.option.cuda.arch(target.attrs['arch'])
+        if target.name == 'cuda' and 'cpu_arch' in target.attrs:
+            hidet.option.cuda.cpu_arch(target.attrs['cpu_arch'])
         with PassContext(instruments=instruments):
             ir_module = lower(ir_module)
 

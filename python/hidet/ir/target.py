@@ -47,7 +47,7 @@ class Target:
             valid_attrs = {}
         elif self.name == 'cuda':
             valid_flags = []
-            valid_attrs = ['arch']  # e.g., '--arch=sm_80'
+            valid_attrs = ['arch', 'cpu_arch']  # e.g., '--arch=sm_80', '--cpu_arch=x86-64'
         else:
             raise ValueError('Cannot recognize target "{}".'.format(self.name))
         for flag in self.flags:

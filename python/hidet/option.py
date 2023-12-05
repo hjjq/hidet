@@ -821,6 +821,34 @@ class cuda:
         arch = cuda.get_arch()
         return int(arch[3]), int(arch[4])
 
+    @staticmethod
+    def cpu_arch(cpu_arch: str = 'auto'):
+        """
+        Set the CUDA architecture to use when building CUDA kernels.
+
+        Parameters
+        ----------
+        arch: Optional[str]
+            The CUDA architecture, e.g., 'sm_35', 'sm_70', 'sm_80', etc. "auto" means
+            using the architecture of the first CUDA GPU on the current machine. Default "auto".
+        """
+        OptionContext.current().set_option('cuda.cpu_arch', cpu_arch)
+
+    @staticmethod
+    def get_cpu_arch() -> str:
+        """
+        Get the CUDA architecture to use when building CUDA kernels.
+
+        Returns
+        -------
+        ret: str
+            The CUDA architecture, e.g., 'sm_35', 'sm_70', 'sm_80', etc.
+        """
+        cpu_arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
+        if cpu_arch == "auto":
+            cpu_arch = 'x86-64'
+        return cpu_arch
+
 
 class compile_server:
     @staticmethod
