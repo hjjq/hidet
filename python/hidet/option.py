@@ -258,6 +258,12 @@ def register_hidet_options():
         description='The CUDA architecture to compile the kernels for (e.g., "sm_70"). "auto" for auto-detect.',
     )
     register_option(
+        name='cuda.cpu_arch',
+        type_hint='str',
+        default_value='auto',
+        description='The CPU architecture to compile the kernels for (e.g., "x86-64"). "auto" for auto-detect.',
+    )
+    register_option(
         name='imperative',
         type_hint='bool',
         default_value=True,
