@@ -856,9 +856,9 @@ class cuda:
         ret: str
             The CPU architecture, e.g., 'x86-64', 'alderlake', etc.
         """
-        arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
+        cpu_arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
         if cpu_arch == "auto":
-            cpu_arch = 'x86-64'
+            cpu_arch = 'native'
         return cpu_arch
 
 class cpu:
