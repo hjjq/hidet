@@ -844,7 +844,7 @@ class cuda:
             The CPU architecture, e.g., 'x86-64', 'alderlake', etc. "auto" means
             using the architecture of the CPU on the current machine. Default "auto".
         """
-        OptionContext.current().set_option('gpu.cpu_arch', cpu_arch)
+        OptionContext.current().set_option('cuda.cpu_arch', cpu_arch)
 
     @staticmethod
     def get_cpu_arch() -> str:
@@ -856,7 +856,7 @@ class cuda:
         ret: str
             The CPU architecture, e.g., 'x86-64', 'alderlake', etc.
         """
-        arch: Optional[str] = OptionContext.current().get_option('gpu.cpu_arch')
+        arch: Optional[str] = OptionContext.current().get_option('cuda.cpu_arch')
         if cpu_arch == "auto":
             cpu_arch = 'x86-64'
         return cpu_arch
