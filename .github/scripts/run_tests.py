@@ -3,7 +3,7 @@ import json
 import subprocess
 import numpy as np
 import tqdm
-from bench_utils import get_db_conn
+from db_utils import get_db_conn
 
 def run_command(cmd):
     cmd = " ".join(cmd)
