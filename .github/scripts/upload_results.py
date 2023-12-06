@@ -1,6 +1,6 @@
 import os
 import json
-from bench_utils import get_db_conn
+from db_utils import get_db_conn
 
 if __name__ == '__main__':
     # Get environment variables

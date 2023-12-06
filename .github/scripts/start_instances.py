@@ -2,7 +2,7 @@ import os
 import time
 import subprocess
 import json
-from bench_utils import get_db_conn
+from db_utils import get_db_conn
 
 def run_command(cmd):
     print("Running command: " + " ".join(cmd))
