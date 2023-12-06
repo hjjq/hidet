@@ -1,15 +1,14 @@
 import os
 import json
 import subprocess
-import mysql.connector
 import numpy as np
 import tqdm
+from bench_utils import get_db_conn
 
 def run_command(cmd):
     cmd = " ".join(cmd)
     print("Running command: " + cmd)
-    # popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, shell=True)
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
     outputs = []
     for line in popen.stdout:
         print(line, end='')
@@ -26,13 +25,7 @@ def run_command(cmd):
 
 def get_bench_cmd(run_type, run_id, run_name, run_param_name, dtype):
     # Get the name of the benchmark script from DB
-    conn = mysql.connector.connect(
-        host=os.environ.get('CI_DB_HOSTNAME'),
-        user=os.environ.get('CI_DB_USERNAME'),
-        password=os.environ.get('CI_DB_PASSWORD'),
-        port=os.environ.get('CI_DB_PORT'),
-        database='hidet_ci'
-    )
+    conn = get_db_conn()
     cursor = conn.cursor()
     query = f'SELECT runfile FROM {run_type} WHERE id = {run_id}'
     cursor.execute(query)

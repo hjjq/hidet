@@ -1,8 +1,8 @@
 import os
 import time
 import subprocess
-import mysql.connector
 import json
+from bench_utils import get_db_conn
 
 def run_command(cmd):
     print("Running command: " + " ".join(cmd))
@@ -17,13 +17,7 @@ if __name__ == '__main__':
     hw_config_ids = os.environ.get('HW_CONFIG').replace(' ', '')
     hw_config_ids = [s for s in hw_config_ids.split(',') if s]
 
-    conn = mysql.connector.connect(
-        host=os.environ.get('CI_DB_HOSTNAME'),
-        user=os.environ.get('CI_DB_USERNAME'),
-        password=os.environ.get('CI_DB_PASSWORD'),
-        port=os.environ.get('CI_DB_PORT'),
-        database='hidet_ci'
-    )
+    conn = get_db_conn()
     cursor = conn.cursor()
 
     instances = []
