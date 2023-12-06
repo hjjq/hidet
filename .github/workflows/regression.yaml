@@ -94,12 +94,14 @@ jobs:
           HW_CONFIG: ${{ matrix.hw_configs }}
           REPO_NAME: ${{ github.repository }}
           REPO_BRANCH: ${{ github.ref_name }}
+        working-directory:
+          ./.github/scripts/bench
 
       - name: Upload run configs
         uses: actions/upload-artifact@v3
         with:
           name: run_configs_${{ matrix.hw_configs }}
-          path: run_configs.json
+          path: ./.github/scripts/bench/run_configs.json
           retention-days: 1
   
   upload_results:
