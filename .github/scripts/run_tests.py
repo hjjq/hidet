@@ -32,7 +32,7 @@ def get_bench_cmd(run_type, run_id, run_name, run_param_name, dtype):
     runfile = cursor.fetchall()[0][0]
     cursor.close()
     conn.close()
-    cmd = ['python', runfile, run_name, '--params', run_param_name, '--dtype', dtype]
+    cmd = ['python', './.github/scripts/bench/' + runfile, run_name, '--params', run_param_name, '--dtype', dtype]
     return cmd
 
 if __name__ == '__main__':
