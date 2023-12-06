@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import pathlib
 import numpy as np
 import tqdm
 from db_utils import get_db_conn
@@ -32,7 +33,8 @@ def get_bench_cmd(run_type, run_id, run_name, run_param_name, dtype):
     runfile = cursor.fetchall()[0][0]
     cursor.close()
     conn.close()
-    cmd = ['python', './.github/scripts/bench/' + runfile, run_name, '--params', run_param_name, '--dtype', dtype]
+    runfile = pathlib.Path(__file__).parent.resolve() + '/bench/' + runfile
+    cmd = ['python', runfile, run_name, '--params', run_param_name, '--dtype', dtype]
     return cmd
 
 if __name__ == '__main__':
