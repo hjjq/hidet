@@ -45,6 +45,8 @@ if __name__ == '__main__':
         fh.close()
         for run_config in run_configs:
             run_type = run_config['type']
+            if run_type == 'operator':
+                continue
             run_id = run_config['id']
             run_param_id = run_config['param_id']
             run_hw_config = run_config['hardware_config'] # Should be same as `hw_config`
