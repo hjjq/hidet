@@ -1,6 +1,6 @@
 import os
 import json
-import mysql.connector
+from bench_utils import get_db_conn
 
 if __name__ == '__main__':
     # Get environment variables
@@ -12,13 +12,7 @@ if __name__ == '__main__':
     commit_url = f'https://github.com/{repo_name}/commit/{commit_sha}'
 
     # Insert commit into DB
-    conn = mysql.connector.connect(
-        host=os.environ.get('CI_DB_HOSTNAME'),
-        user=os.environ.get('CI_DB_USERNAME'),
-        password=os.environ.get('CI_DB_PASSWORD'),
-        port=os.environ.get('CI_DB_PORT'),
-        database='hidet_ci'
-    )
+    conn = get_db_conn()
     cursor = conn.cursor()
 
     query = (
