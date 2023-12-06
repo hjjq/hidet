@@ -4,7 +4,7 @@ import torch
 
 def setup_hidet_flags(dtype):
     use_fp16 = dtype == 'float16'
-    hidet.torch.dynamo_config.search_space(0)
+    hidet.torch.dynamo_config.search_space(2)
     hidet.torch.dynamo_config.use_fp16(use_fp16)
     hidet.torch.dynamo_config.use_fp16_reduction(use_fp16)
     hidet.torch.dynamo_config.use_attention(True)
