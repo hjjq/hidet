@@ -9,7 +9,7 @@ from db_utils import get_db_conn
 def run_command(cmd):
     cmd = " ".join(cmd)
     print("Running command: " + cmd)
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, shell=True)
     outputs = []
     for line in popen.stdout:
         print(line, end='')
