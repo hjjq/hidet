@@ -6,6 +6,8 @@ import numpy as np
 import tqdm
 from db_utils import get_db_conn
 
+special_models = ['llama-7b', 'gpt2']
+
 def run_command(cmd):
     cmd = " ".join(cmd)
     print("Running command: " + cmd)
@@ -33,7 +35,10 @@ def get_bench_cmd(run_type, run_id, run_name, run_param_name, dtype):
     runfile = cursor.fetchall()[0][0]
     cursor.close()
     conn.close()
-    runfile = str(pathlib.Path(__file__).parent.resolve()) + '/bench/' + runfile
+    if run_name in special_models:
+        runfile = './models/bench/' + runfile
+    else:
+        runfile = str(pathlib.Path(__file__).parent.resolve()) + '/bench/' + runfile
     cmd = ['python', runfile, run_name, '--params', run_param_name, '--dtype', dtype]
     return cmd
 

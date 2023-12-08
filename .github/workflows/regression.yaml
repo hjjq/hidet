@@ -64,23 +64,36 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          path: hidet
+      
+      - name: Checkout models
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.MODEL_REPO }}
+          token: ${{ secrets.GH_PAT }}
+          path: models
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-          pip install -r ./.github/requirements-ci.txt
+          pip install -r hidet/requirements.txt
+          pip install -r hidet/requirements-dev.txt
+          pip install -r hidet/.github/requirements-ci.txt
       
       - name: Build hidet
         run: |
-          bash ./scripts/wheel/build_wheel.sh
-          WHEEL=$(find ./scripts/wheel/built_wheel -maxdepth 1 -name '*.whl')
+          bash hidet/scripts/wheel/build_wheel.sh
+          WHEEL=$(find hidet/scripts/wheel/built_wheel -maxdepth 1 -name '*.whl')
           echo "WHEEL_NAME=$WHEEL" >> $GITHUB_ENV
           echo "Built wheel: ${{ env.WHEEL_NAME }}"
 
       - name: Install hidet
         run: |
           pip install --no-deps --force-reinstall ${{ env.WHEEL_NAME }}
+      
+      - name: Install models
+        run: |
+          pip install -e models
       
       - name: Download run configs
         uses: actions/download-artifact@v3
@@ -89,7 +102,7 @@ jobs:
       
       - name: Run tests
         run: |
-          python ./.github/scripts/run_tests.py
+          python hidet/.github/scripts/run_tests.py
         env:
           HW_CONFIG: ${{ matrix.hw_configs }}
           REPO_NAME: ${{ github.repository }}
