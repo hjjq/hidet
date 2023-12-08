@@ -14,9 +14,6 @@ model_class = {
 }
 
 def bench_hf_transformers(model_name, seqlen, dtype):
-    if model_name in ['llama-7b', 'gpt2']:
-        # TODO: actually run these models
-        return 0.0
     setup_hidet_flags(dtype)
     enable_compile_server(True)
     dtype = getattr(torch, dtype)
