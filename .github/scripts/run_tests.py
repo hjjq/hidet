@@ -62,7 +62,10 @@ if __name__ == '__main__':
         run_dtype_id = run_config['dtype_id']
         run_dtype_name = run_config['dtype_name']
         cmd = get_bench_cmd(run_type, run_id, run_name, run_param_name, run_dtype_name)
-        outputs = run_command(cmd)
+        if run_name == 'llama-7b':
+            outputs = run_command(cmd)
+        else:
+            outputs = None
         if outputs:
             latency = float(outputs[-1].split('\n')[0]) # Get last line
             run_config['latency'] = latency
