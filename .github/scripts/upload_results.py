@@ -49,6 +49,7 @@ if __name__ == '__main__':
                 continue
             run_id = run_config['id']
             run_param_id = run_config['param_id']
+            run_dtype_id = run_config['dtype_id']
             run_hw_config = run_config['hardware_config'] # Should be same as `hw_config`
             run_latency = run_config['latency']
             run_hw_config_id = hw_config_map[run_hw_config]
@@ -56,8 +57,6 @@ if __name__ == '__main__':
                 f'INSERT INTO {run_type}_result (commit_id, {run_type}_id, input_parameter_id, hardware_config_id, '
                 f'dtype_id, latency) VALUES (%s, %s, %s, %s, %s, %s)'
             )
-            val = (commit_id, run_id, run_param_id, run_hw_config_id, 1, run_latency)
-            cursor.execute(query, val)
-            val = (commit_id, run_id, run_param_id, run_hw_config_id, 2, run_latency * 2)
+            val = (commit_id, run_id, run_param_id, run_hw_config_id, run_dtype_id, run_latency)
             cursor.execute(query, val)
             conn.commit()
