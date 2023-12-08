@@ -49,8 +49,6 @@ if __name__ == '__main__':
     rows = cursor.fetchall()
     for row in rows:
         model_id, model_name, param_id, param_name, dtype_id, dtype_name = row
-        if dtype_name != 'float16':
-            continue
         run_configs.append({'type': 'model', 'id': int(model_id), 'name': model_name, 
                             'param_id': int(param_id), 'param_name': param_name,
                             'dtype_id': int(dtype_id), 'dtype_name': dtype_name,
@@ -66,8 +64,6 @@ if __name__ == '__main__':
     rows = cursor.fetchall()
     for row in rows:
         op_id, op_name, param_id, param_name, dtype_id, dtype_name = row
-        if dtype_name != 'float16':
-            continue
         run_configs.append({'type': 'operator', 'id': int(op_id), 'name': op_name, 
                             'param_id': int(param_id), 'param_name': param_name,
                             'dtype_id': int(dtype_id), 'dtype_name': dtype_name,
