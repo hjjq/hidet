@@ -74,6 +74,7 @@ jobs:
           repository: ${{ secrets.MODEL_REPO }}
           token: ${{ secrets.GH_PAT }}
           path: models
+          ref: ci
 
       - name: Install dependencies
         run: |
