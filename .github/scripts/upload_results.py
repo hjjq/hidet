@@ -7,7 +7,7 @@ if __name__ == '__main__':
     commit_sha = os.environ.get('COMMIT_SHA')
     commit_time = os.environ.get('COMMIT_TIME')
     commit_author = os.environ.get('COMMIT_AUTHOR')
-    repo_name = os.environ.get('REPO_NAME')
+    repo_name = os.environ.get('REPO_NAME').strip()
     hw_configs = os.environ.get('HW_CONFIGS')
     commit_url = f'https://github.com/{repo_name}/commit/{commit_sha}'
 
