@@ -3,15 +3,14 @@ name: Regression
 on:
   workflow_dispatch:
     inputs:
-      hardware_config:
-        description: 'Hardware Configuration ID(s), comma separated.'
-        required: true
-        default: '2'
       shutdown_instances:
         description: 'Shut down GPU instances when finished.'
         required: true
         type: boolean
         default: false
+  pull_request_review:
+    types: [submitted]
+
 env:
   CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
   CI_DB_PORT: ${{ secrets.CI_DB_PORT }}
@@ -26,9 +25,11 @@ env:
   AWS_DEFAULT_REGION: us-east-1
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
 
-
 jobs:
   start_instances:
+    if: |
+      github.event_name == 'workflow_dispatch' || 
+      github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED'
     runs-on: ubuntu-latest
     outputs:
       started_instances: ${{ steps.run_py_script.outputs.started_instances }}
@@ -44,7 +45,8 @@ jobs:
         id: run_py_script
         run: timeout 900 python ./.github/scripts/start_instances.py
         env:
-          HW_CONFIG: ${{ inputs.hardware_config }}
+          HW_CONFIG: all
+          # TODO: Allow launching only specified GPU instances
       
       - name: Upload run configs
         uses: actions/upload-artifact@v3
