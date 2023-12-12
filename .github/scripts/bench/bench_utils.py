@@ -35,5 +35,5 @@ def enable_compile_server(enable=True):
     hidet.option.compile_server.port(int(os.environ.get('CI_CS_PORT')))
     hidet.option.compile_server.username(os.environ.get('CI_CS_USERNAME'))
     hidet.option.compile_server.password(os.environ.get('CI_CS_PASSWORD'))
-    hidet.option.compile_server.repo(os.environ.get('REPO_NAME'), os.environ.get('REPO_BRANCH'))
+    hidet.option.compile_server.repo(os.environ.get('REPO_NAME').strip(), os.environ.get('REPO_BRANCH'))
     hidet.option.compile_server.enable(flag=enable)
