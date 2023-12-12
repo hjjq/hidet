@@ -13,12 +13,20 @@ def run_command(cmd):
 
 
 if __name__ == '__main__':
-    # e.g., ' 1, 2, ,3,,' -> ['1', '2', '3']
-    hw_config_ids = os.environ.get('HW_CONFIG').replace(' ', '')
-    hw_config_ids = [s for s in hw_config_ids.split(',') if s]
-
     conn = get_db_conn()
     cursor = conn.cursor()
+
+    # e.g., ' 1, 2, ,3,,' -> ['1', '2', '3']
+    hw_config_ids = os.environ.get('HW_CONFIG').replace(' ', '')
+    if hw_config_ids == 'all':
+        query = (
+            'SELECT id FROM hardware_config'
+        )
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        hw_config_ids = [row[0] for row in rows]
+    else:
+        hw_config_ids = [s for s in hw_config_ids.split(',') if s]
 
     instances = []
     # Fetch list of (cloud_provider_id, instance_id) tuples from DB
