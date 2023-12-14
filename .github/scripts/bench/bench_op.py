@@ -128,7 +128,7 @@ if __name__ == '__main__':
         raise ValueError(f'Benchmark function for operator {operator} not implemented')
 
     setup_hidet_flags(dtype, dynamo=False)
-    # enable_compile_server(True)
+    enable_compile_server(True)
     with hidet.graph.PassContext() as ctx:
         ctx.set_reduce_precision(dtype)
         ctx.set_use_attention(True)

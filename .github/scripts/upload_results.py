@@ -8,17 +8,21 @@ if __name__ == '__main__':
     commit_time = os.environ.get('COMMIT_TIME')
     commit_author = os.environ.get('COMMIT_AUTHOR')
     repo_name = os.environ.get('REPO_NAME').strip()
+    repo_branch = os.environ.get('REPO_BRANCH').strip()
     hw_configs = os.environ.get('HW_CONFIGS')
-    commit_url = f'https://github.com/{repo_name}/commit/{commit_sha}'
+    if 'pull/' in repo_branch:
+        commit_url = f'https://github.com/{repo_name}/{repo_branch}/commits/{commit_sha}'
+    else:
+        commit_url = f'https://github.com/{repo_name}/commit/{commit_sha}'
 
     # Insert commit into DB
     conn = get_db_conn()
     cursor = conn.cursor()
 
     query = (
-        'INSERT INTO commit (hash, url, author, time, status) VALUES (%s, %s, %s, %s, %s)'
+        'INSERT INTO commit (hash, url, author, time, status, branch) VALUES (%s, %s, %s, %s, %s, %s)'
     )
-    val = (commit_sha[:7], commit_url, commit_author, commit_time, 'pass')
+    val = (commit_sha[:7], commit_url, commit_author, commit_time, 'pass', repo_name + '/' + repo_branch)
     cursor.execute(query, val)
     conn.commit()
 

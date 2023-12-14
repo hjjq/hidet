@@ -62,7 +62,7 @@ if __name__ == '__main__':
         run_dtype_id = run_config['dtype_id']
         run_dtype_name = run_config['dtype_name']
         cmd = get_bench_cmd(run_type, run_id, run_name, run_param_name, run_dtype_name)
-        if run_name == 'llama-7b':
+        if False:
             outputs = run_command(cmd)
         else:
             outputs = None

@@ -8,8 +8,8 @@ on:
         required: true
         type: boolean
         default: false
-  pull_request_review:
-    types: [submitted]
+  issue_comment:
+    types: [created]
 
 env:
   CI_DB_HOSTNAME: ${{ secrets.CI_DB_HOSTNAME }}
@@ -29,7 +29,9 @@ jobs:
   start_instances:
     if: |
       github.event_name == 'workflow_dispatch' || 
-      github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED'
+      github.event_name == 'issue_comment' && github.event.issue.pull_request &&
+      github.event.comment.author_association == 'MEMBER' &&
+      contains(github.event.comment.body, 'hidet-ci launch')
     runs-on: ubuntu-latest
     outputs:
       started_instances: ${{ steps.run_py_script.outputs.started_instances }}
@@ -68,6 +70,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
+          ref: |
+            ${{ github.event_name == 'workflow_dispatch' && github.ref_name ||
+            format('refs/pull/{0}/head', github.event.issue.number) }}
           path: hidet
       
       - name: Checkout models
@@ -109,12 +114,10 @@ jobs:
           python hidet/.github/scripts/run_tests.py
         env:
           HW_CONFIG: ${{ matrix.hw_configs }}
-          REPO_NAME: |
-            ${{ github.event_name == 'workflow_dispatch' && github.repository ||
-            github.event.pull_request.head.repo.full_name }}
+          REPO_NAME: ${{ github.repository }}
           REPO_BRANCH: |
             ${{ github.event_name == 'workflow_dispatch' && github.ref_name ||
-            github.event.pull_request.head.ref }}
+            format('pull/{0}', github.event.issue.number) }}
 
       - name: Upload run configs
         uses: actions/upload-artifact@v3
@@ -129,6 +132,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        ref: |
+          ${{ github.event_name == 'workflow_dispatch' && github.ref_name ||
+          format('refs/pull/{0}/head', github.event.issue.number) }}
 
       - name: Install dependencies
         run: pip install mysql-connector-python
@@ -139,17 +145,20 @@ jobs:
       - name: Setup ENV
         run: |
           COMMIT_TIME=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')
-          echo "COMMIT_TIME=$COMMIT_TIME" >> $GITHUB_ENV
           COMMIT_AUTHOR=$(git log -1 --format=%an)
+          COMMIT_SHA=$(git log -1 --format=%H)
+          echo "COMMIT_TIME=$COMMIT_TIME" >> $GITHUB_ENV
           echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
+          echo "COMMIT_SHA=$COMMIT_SHA" >> $GITHUB_ENV
 
       - name: Run main Python script
         run: python ./.github/scripts/upload_results.py
         env:
-          REPO_NAME: |
-            ${{ github.event_name == 'workflow_dispatch' && github.repository ||
-            github.event.pull_request.head.repo.full_name }}
-          COMMIT_SHA: ${{ github.sha }}
+          REPO_NAME: ${{ github.repository }}
+          REPO_BRANCH: |
+            ${{ github.event_name == 'workflow_dispatch' && github.ref_name ||
+            format('pull/{0}', github.event.issue.number) }}
+          COMMIT_SHA: ${{ env.COMMIT_SHA }}
           COMMIT_TIME: ${{ env.COMMIT_TIME }}
           COMMIT_AUTHOR: ${{ env.COMMIT_AUTHOR }}
           HW_CONFIGS: ${{ needs.start_instances.outputs.hw_configs }}
