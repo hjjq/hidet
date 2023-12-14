@@ -132,9 +132,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        ref: |
-          ${{ github.event_name == 'workflow_dispatch' && github.ref_name ||
-          format('refs/pull/{0}/head', github.event.issue.number) }}
+        with:
+          ref: |
+            ${{ github.event_name == 'workflow_dispatch' && github.ref_name ||
+            format('refs/pull/{0}/head', github.event.issue.number) }}
 
       - name: Install dependencies
         run: pip install mysql-connector-python
